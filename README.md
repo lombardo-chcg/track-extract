@@ -1,11 +1,19 @@
-# song extractor
+# track-extract
 
-Use case: extract individual tracks from extended `wav` files containing live music recorded with a Zoom field recording device (or similar)
+A tool to segment extended live music performance recordings (e.g. concert sets captured on devices like the Zoom H-series) into individual, discrete song files.  It processes large ‘.wav‘ files and identifies track boundaries, making it easy to archive and share individual live tracks.
 
 # install
 
-`uv sync`
+Install `uv` first - [https://docs.astral.sh/uv](https://docs.astral.sh/uv/)
+
+```bash
+uv sync
+```
 
 # use
 
-`uv run main.py`
+```bash
+uv run main.py --input-file "ZOOM0001.WAV" --output-dir "/REPLACE_ME"
+```
+
+Modify `main.py` config params directly as needed (`SILENCE_THRESH`, `MIN_SILENCE_LEN_SEC`, `MIN_SONG_LEN_SEC`, etc.)
