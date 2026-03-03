@@ -12,8 +12,8 @@ MERGE_GAP_SEC = 5.0         # Merge gaps smaller than this
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Extract songs from a stereo WAV file based on silence detection.")
-    parser.add_argument('--input-file', type=str, required=True, help='Path to input WAV file')
-    parser.add_argument('--output-dir', type=str, default='songs_st', help='Directory to save extracted songs')
+    parser.add_argument('-i', '--input-file', type=str, required=True, help='Path to input WAV file')
+    parser.add_argument('-o', '--output-dir', type=str, default='.', help='Directory to save extracted songs')
     return parser.parse_args()
 
 def main():
@@ -21,7 +21,7 @@ def main():
     input_file = args.input_file
     output_dir = args.output_dir
 
-    print(f"processing {input_file}, saving tracks to ${output_dir}")
+    print(f"Processing {input_file}, saving tracks to {output_dir}")
 
     # === LOAD AUDIO IN STEREO ===
     y_stereo, sr = sf.read(input_file, always_2d=True)
