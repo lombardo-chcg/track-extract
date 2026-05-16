@@ -14,14 +14,16 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Extract songs from a stereo WAV file based on silence detection.")
     parser.add_argument('-i', '--input-file', type=str, required=True, help='Path to input WAV file')
     parser.add_argument('-o', '--output-dir', type=str, default='.', help='Directory to save extracted songs')
+    parser.add_argument('-p', '--prefix', type=str, default='', help='Text to attach before auto index-based file name')
     return parser.parse_args()
 
 def main():
     args = parse_args()
     input_file = args.input_file
     output_dir = args.output_dir
+    prefix = args.prefix
 
-    print(f"Processing {input_file}, saving tracks to {output_dir}")
+    print(f"Processing {input_file}, saving tracks to {output_dir}/{prefix}")
 
     # === LOAD AUDIO IN STEREO ===
     y_stereo, sr = sf.read(input_file, always_2d=True)
@@ -59,7 +61,7 @@ def main():
         start_sample = int(start * sr)
         end_sample = int(end * sr)
         chunk = y_stereo[start_sample:end_sample]
-        out_path = os.path.join(output_dir, f"song_{i+1:02}.wav")
+        out_path = os.path.join(output_dir, f"{prefix}track_{i+1:02}.wav")
         sf.write(out_path, chunk, sr)
         print(f"Exported {out_path} [{duration:.2f} sec]")
 
