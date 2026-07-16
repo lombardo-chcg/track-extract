@@ -1,4 +1,5 @@
 import argparse
+import datetime
 import librosa
 import numpy as np
 import soundfile as sf
@@ -13,7 +14,7 @@ MERGE_GAP_SEC = 5.0         # Merge gaps smaller than this
 def parse_args():
     parser = argparse.ArgumentParser(description="Extract songs from a stereo WAV file based on silence detection.")
     parser.add_argument('-i', '--input-file', type=str, required=True, help='Path to input WAV file')
-    parser.add_argument('-o', '--output-dir', type=str, default='.', help='Directory to save extracted songs')
+    parser.add_argument('-o', '--output-dir', type=str, default=None, help='Directory to save extracted songs (default: input file directory)')
     parser.add_argument('-p', '--prefix', type=str, default='', help='Text to attach before auto index-based file name')
     return parser.parse_args()
 
@@ -21,6 +22,8 @@ def main():
     args = parse_args()
     input_file = args.input_file
     output_dir = args.output_dir
+    if output_dir is None:
+        output_dir = os.path.dirname(os.path.abspath(input_file))
     prefix = args.prefix
 
     print(f"Processing {input_file}, saving tracks to {output_dir}/{prefix}")
@@ -54,6 +57,8 @@ def main():
     # === EXPORT SONGS FROM ORIGINAL STEREO AUDIO ===
     os.makedirs(output_dir, exist_ok=True)
 
+    timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+
     for i, (start, end) in enumerate(segments):
         duration = end - start
         if duration < MIN_SONG_LEN_SEC:
@@ -61,7 +66,7 @@ def main():
         start_sample = int(start * sr)
         end_sample = int(end * sr)
         chunk = y_stereo[start_sample:end_sample]
-        out_path = os.path.join(output_dir, f"{prefix}track_{i+1:02}.wav")
+        out_path = os.path.join(output_dir, f"{prefix}track_{i+1}_{timestamp}.wav")
         sf.write(out_path, chunk, sr)
         print(f"Exported {out_path} [{duration:.2f} sec]")
 
